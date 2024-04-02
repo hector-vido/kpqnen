@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: lua
+  name: lua
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: lua
+  template:
+    metadata:
+      labels:
+        app: lua
+    spec:
+      containers:
+      - envFrom:
+        - secretRef:
+            name: mysql-env
+        image: docker.io/hectorvido/lua-app
+        name: lua-app
+        ports:
+        - name: http
+          containerPort: 8080
+        volumeMounts:
+        - name: nginx-conf
+          mountPath: /usr/local/openresty/nginx/conf/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: lua
+  name: lua
+  namespace: default
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: lua

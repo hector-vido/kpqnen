@@ -1,0 +1,7 @@
+groups:
+- name: OpenResty
+  rules:
+  - alert: OpenRestyFailedRequests
+    expr: increase(nginx_http_requests_total{status="500"}[15m]) > 0
+    annotations:
+      summary: Error 500 counter

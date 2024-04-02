@@ -1,0 +1,11 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: openresty-failed-requests
+  namespace: default
+spec:
+  groups:
+  - name: OpenResty
+    rules:
+    - alert: OpenRestyFailedRequests
+      expr: increase(nginx_http_requests_total{status="500"}[15m]) > 0
